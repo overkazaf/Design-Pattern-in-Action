@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	
+</body>
+<script type="text/javascript">
+	var imageLoader = (function (){
+		var imgNode = document.createElement('img');
+		document.body.appendChild(imgNode);
+
+		return {
+			setSrc : function (src){
+				imgNode.src = src;
+			}
+		};
+	})();
+
+	var proxyImageLoader = (function (){
+		var image = new Image;
+		image.onload = function (){
+			setTimeout(function (){
+				imageLoader.setSrc(image.src);
+			},2000);
+		};
+
+		return {
+			setSrc : function (src){
+				imageLoader.setSrc('images/1.jpg');
+				image.src = src;
+			}
+		};
+	})();
+
+
+	window.onload = function (){
+		proxyImageLoader.setSrc('images/2.png');
+	};
+</script>
+</html>

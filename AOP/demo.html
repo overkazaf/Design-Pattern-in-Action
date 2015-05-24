@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<button id="btn1">aaaa</button>
+</body>
+<script type="text/javascript">
+	Function.prototype.before = function(beforefn){
+		var __self = this;
+		return function(){
+			beforefn.apply(this, arguments);
+			return __self.apply(this, arguments);
+		};
+	};
+
+	Function.prototype.after = function(afterfn){
+		var __self = this;
+		return function(){
+			var ret = __self.apply(this, arguments);
+			afterfn.apply(this, arguments);
+			return ret;
+		};
+	};
+
+	function byId (id) {
+		return document.getElementById(id);
+	}
+
+	function log(s){
+		console.log(s);
+	}
+	window.onload = function (){
+		
+		byId('btn1').onclick = function (){
+			log('1');
+		};
+	};
+</script>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<button id="btn">haha</button>
+</body>
+
+<script type="text/javascript">
+	
+	
+
+	window.onload = function (){
+
+		var getSingletonInstance = function (fn){
+			var obj;
+			return function (){
+				return obj || (obj = fn.apply(this, arguments));
+			}
+		};
+
+		var createDiv = function (){
+			var div = document.createElement('div');
+			div.innerHTML = 'new';
+			document.body.appendChild(div);
+			return div;
+		};
+
+		var createIframe = function (){
+			var iframe = document.createElement('iframe');
+			document.body.appendChild(iframe);
+			return iframe;
+		};
+		var createSingletonDiv = getSingletonInstance(createDiv);
+		var createSingletonIframe = getSingletonInstance(createIframe);
+
+ 		var btn = document.getElementById('btn');
+		btn.onclick = function (){
+			var if1 = createSingletonIframe();
+			var if2 = createSingletonIframe();
+			console.log(if1 == if2);
+		};
+	}
+
+</script>
+</html>

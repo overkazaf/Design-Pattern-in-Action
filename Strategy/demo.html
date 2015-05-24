@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		.error {
+			border: 1px solid #f00;
+		}
+	</style>
+</head>
+<body>
+	<form name="myform" id="myform">
+		<input type="text" name="username">
+		<input type="password" name="password">
+		<input type="text" name="phone">
+		<button type="submit">校验</button>
+	</form>
+</body>
+<script type="text/javascript">
+	
+	var strategies = {
+		'isNonEmpty' : function (value, errorMsg){
+			
+			if (value === '') {
+				return errorMsg;
+			}
+		},
+		'minLength' : function (value, len, errorMsg){
+			
+			if (value.length < len) {
+				return errorMsg;
+			}
+		},
+		'isMobile' : function (value, errorMsg){
+			
+			var re = /^1[3|5|8][0-9]{9}$/gi;
+			if (!re.test(value)) {
+				return errorMsg;
+			}
+		}
+	};
+
+	var Validator = function(){
+		this.cache = [];
+	};
+
+	Validator.prototype.validate = function (){
+		for (var i=0,fn; fn=this.cache[i++];) {
+			var errorMsg = fn();
+			if (errorMsg) {
+				return errorMsg;
+			}
+		}
+	};
+
+	Validator.prototype.add = function (dom, rule, errorMsg){
+		var ary = rule.split(':');
+		this.cache.push(function (){
+			var strategy = ary.shift();
+			ary.unshift(dom.value);
+			ary.push(errorMsg);
+			return strategies[strategy].apply(dom, ary);
+		});
+	};
+
+
+	window.onload = function (){
+		var f = document.getElementById('myform');
+		f.onsubmit = function (){
+			var validator = new Validator();
+			validator.add(f.username, 'isNonEmpty', '不能为空');
+			validator.add(f.password, 'minLength:6', '密码长度至少为6');
+			validator.add(f.phone, 'isMobile', '必须为号码');
+
+			var errorMsg = validator.validate();
+			if (errorMsg) {
+				alert(errorMsg);
+				return false;
+			}
+		};
+	};
+</script>
+</html>

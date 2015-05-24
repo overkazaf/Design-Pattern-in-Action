@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	
+</body>
+<script type="text/javascript">
+	var Event = (function(){
+		var clientList = {},
+			bind,
+			unbind,
+			trigger;
+
+		bind = function (key, fn) {
+			if (!clientList[key]) {
+				clientList[key] = [];
+			}
+			clientList.push(fn);
+		};
+
+		trigger = function (){
+			var key = Array.prototype.shift.call(arguments),
+				fns = clientList[key];
+
+			if (!fns || fns.length === 0) {
+				return false;
+			}
+
+			for (var i=0,fn; fn=fns[i++];) {
+				fn.apply(this, arguments);
+			}
+		};
+
+		unbind = function (key, fn){
+			var fns = clientList[key];
+
+			if (!fns) {
+				return false;
+			} else {
+				if (!fn) {
+					fns && (fns.length = 0);
+				} else {
+					for (var l=fns.length-1; l>=0; l--) {
+						var _fn = fns[l];
+						if (_fn === fn) {
+							fns.splice(l, 1);
+						}
+					}
+				}
+			}
+		};
+
+		return {
+			bind : bind,
+			trigger : trigger,
+			unbind : unbind
+		};
+	})();
+
+
+	var log = function (k, v){
+		console.log('%s %s', k, v);
+	}
+	window.onload = function (){
+		log('asdfasdf', 'asdfsdf');
+	}
+</script>
+</html>

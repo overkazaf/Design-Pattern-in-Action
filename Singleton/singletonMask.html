@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		.modal {width:600px;height:480px;background-color:#fff;border:1px solid #ccc;box-shadow: 1px 1px 5px #000;position: absolute;left:50%;top:50%;margin-left:-300px;margin-top:-240px;display:none;}
+	</style>
+</head>
+<body>
+	
+</body>
+<script type="text/javascript">
+	var getInstance = function (fn){
+		var ret;
+		return function(){
+			return ret || (ret = fn.apply(this, arguments));
+		}
+	};
+
+	var createModal = function(modalId, sClass){
+		modalId = modalId || 'gModal';
+		sClass = sClass || 'modalClass'
+		var div = document.createElement('div');
+		div.id = modalId;
+		div.className = sClass;
+		return document.body.appendChild(div);
+	};
+
+	var getModalSingleton = getInstance(createModal);
+
+	var show = function (el) {
+		el.style.display = 'block';
+	};
+	var hide = function (el) {
+		el.style.display = 'none';
+	};
+	window.onload = function(){
+		var modalEl = getModalSingleton('div1', 'modal');
+		show(modalEl);
+		setTimeout(function(){
+			hide(modalEl);
+		}, 3000);
+	};
+</script>
+</html>

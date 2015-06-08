@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<button id="btn1">Button</button>
+	<div id="div1">1</div>
+</body>
+<script type="text/javascript">
+	var Event = (function (){
+		var eventList = [];
+		return Event = {
+			listen : function (key, fn){
+				if(!eventList[key]){
+					eventList[key] = [];
+				}
+
+				eventList[key].push(fn);
+			},
+			getEventList : function(){
+				return eventList;
+			},
+			trigger : function (key){
+				var fns = eventList[key];
+				if(!fns){
+					return false;
+				}
+
+				for (var i=0, fn; fn = fns[i++];) {
+					fn.apply(this);
+				}
+			},
+			remove : function (key, fn){
+				var fns = eventList[key];
+
+				if(!fns){
+					return false;
+				}
+
+				if(!fn){
+					fns && (fns.length = 0);
+				} else {
+					for (var i=fns.length, fn; i>=0; i--) {
+						if (fn === fns[i]) {
+							Array.prototype.splice.call(this, fns[i], 1);
+						}
+					}
+				}
+			}
+		};
+	})();
+
+
+	window.onload = function (){
+		var btn1 = document.getElementById('btn1'),
+			div1 = document.getElementById('div1'),
+			cnt = 1;
+		
+		var a = (function (){
+			btn1.onclick = function(){
+				for (var i=0;i<10;i++){
+					Event.trigger('increase');
+					alert('triggered');
+				}
+			}
+		})();
+
+		var b = (function (){
+
+			Event.listen('increase', function (){
+				++cnt;
+				div1.innerHTML = cnt;
+			});
+		})();
+	}
+</script>
+</html>

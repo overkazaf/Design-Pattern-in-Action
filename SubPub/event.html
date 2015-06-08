@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<button id="btn1">Button1</button>
+	<div id="div1"></div>
+</body>
+<script type="text/javascript">
+	var Event = (function (){
+		var eventList = [],
+			listen,
+			trigger,
+			remove;
+
+		listen = function (type, fn){
+			if (!eventList[type]){
+				eventList[type] = [];
+			}
+			eventList.push(fn);
+		};
+
+		trigger = function (){
+			var key = Array.prototype.shift.call(arguments),
+				fns = eventList[key];
+			console.log(key);
+			if(!fns || fns.length === 0){
+				return false;
+			}
+
+			for (var i=0,fn; fn=fns[i++];) {
+				fn.apply(this, arguments);
+			}
+		};
+
+		remove  = function (type, fn){
+			var fns = eventList[type];
+			if (!fns){
+				return false;
+			}
+
+			if (!fn){
+				fns && (fns.length = 0);
+			} else {
+				for (var i=fns.length-1, _fn; i>=0; i--) {
+					_fn = fns[i];
+					if (_fn === fn) {
+						Array.prototype.splice.call(fns, i, 1);
+					}
+				}
+			}
+		};
+
+
+
+
+		return {
+			listen : listen,
+			trigger : trigger,
+			remove : remove
+		};
+	})();
+
+	var addEvent = function (el, type, fn){
+		if (window.addEventListener){
+			addEvent = el.addEventListener(type, fn, false)
+		} else if (window.attachEvent){
+			addEvent = window.attachEvent('on' + type, fn);
+		}
+
+		addEvent(el, type, fn);
+	};
+
+	var byId = function (id){
+		return typeof id === 'object' ? id : document.getElementById(id);
+	};
+
+	
+	var a = (function (){
+		var cnt = 0;
+		var btn = byId('btn1');
+		btn.onclick = function (){
+			Event.trigger('add', function (){
+				++cnt;
+			});
+		};
+	})();
+
+	var b = (function (){
+		var div1 = byId('div1');
+
+		Event.listen('add', function (cnt){
+			div1.innerHTML = cnt;
+		});
+	})();
+</script>
+</html>
